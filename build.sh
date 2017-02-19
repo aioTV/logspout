@@ -1,13 +1,15 @@
 #!/bin/sh
-set -e
-apk add --update go git mercurial
+set -ex
+echo "http://alpine.gliderlabs.com/alpine/v3.5/community" \
+    >> /etc/apk/repositories
+apk add --update 'go>1.7' git mercurial build-base ca-certificates
 mkdir -p /go/src/github.com/gliderlabs
 cp -r /src /go/src/github.com/gliderlabs/logspout
 cd /go/src/github.com/gliderlabs/logspout
 export GOPATH=/go
 go get
-go build -ldflags "-X main.Version $1" -o /bin/logspout
-apk del go git mercurial
+go build -ldflags "-X main.Version=$1" -o /bin/logspout
+apk del go git mercurial build-base ca-certificates
 rm -rf /go
 rm -rf /var/cache/apk/*
 
